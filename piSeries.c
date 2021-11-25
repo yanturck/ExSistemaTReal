@@ -24,7 +24,7 @@ void *thread_func(void *arg) {
     float  localsum = 0;
 
     endidx = argument->idx + argument->length;  // Posição do ultimo+1
-    printf("Calculando de %d ate %d\n", argument->idx, endidx);
+    printf("Calculando do termo %d ate %d\n", argument->idx, endidx);
 
     for (i = argument->idx; i < endidx; i++) {
         localsum += 4*(pow(-1, i)/(2*i+1));
