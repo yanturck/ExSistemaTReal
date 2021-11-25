@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <pthread.h>
+#include <semaphore.h>
 
 #define NUMTHREADS  4
 #define TERMOS 100
@@ -16,6 +17,7 @@ typedef struct {
 pthread_t   threads[NUMTHREADS];  // Threads do programa
 thread_arg  arguments[NUMTHREADS];  // Argumentos das threads
 
+sem_t S;
 float sum;
 
 void *thread_func(void *arg) {
@@ -30,12 +32,16 @@ void *thread_func(void *arg) {
         localsum += 4*(pow(-1, i)/(2*i+1));
     }
     printf("Aproxima = %f\n", localsum);
+
+	sem_wait(&S);
 	sum += localsum; // Acumula a soma da thread na soma geral (sum = sum+localsum)
+	sem_post(&S);
 }
 
 int main(int argc, char **argv) {
 	int i, length, remainder;  // remainder = resto
 
+	sem_init(&S, 0, 1);
 	sum = 0;
     length = TERMOS / NUMTHREADS; // Tamanho dos dados de cada thread (divisão inteira)
 	remainder = TERMOS % NUMTHREADS; // Resto da divisão inteira
@@ -51,5 +57,6 @@ int main(int argc, char **argv) {
 	for(i=0; i<NUMTHREADS; i++) {
 		pthread_join(threads[i], NULL);
 	}
+	sem_destroy(&S);
 	printf("Aproximação = %f\n", sum);
 }
