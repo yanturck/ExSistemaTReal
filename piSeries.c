@@ -40,8 +40,11 @@ void *thread_func(void *arg) {
 
 int main(int argc, char **argv) {
 	int i, length, remainder;  // remainder = resto
+	clock_t tInicio, tFim, t;
 
+	tInicio = clock();
 	sem_init(&S, 0, 1);
+
 	sum = 0;
     length = TERMOS / NUMTHREADS; // Tamanho dos dados de cada thread (divisão inteira)
 	remainder = TERMOS % NUMTHREADS; // Resto da divisão inteira
@@ -58,5 +61,10 @@ int main(int argc, char **argv) {
 		pthread_join(threads[i], NULL);
 	}
 	sem_destroy(&S);
+
+	tFim = clock();
+    t = tFim - tInicio;	
+
 	printf("Aproximação = %f\n", sum);
+	printf("Tempo gasto: %lf s\n", (double)t/CLOCKS_PER_SEC);
 }
